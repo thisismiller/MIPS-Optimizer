@@ -1,0 +1,17 @@
+This code attempts to find pipeline stalls in a five-stage MIPS pipeline by analyzing data dependencies. For example, if you feed it the code:
+
+    LW R2,#0(R1)
+    ADD R3,R2,R1
+    SUB R4,R3,R2
+    BEQ R2,R4,lbl
+
+The program will output:
+
+    LW R2, #0(R1)
+    STALL
+    ADD R3, R2, R1
+    SUB R4, R3, R2
+    STALL
+    BEQ R2, R4, lbl
+
+Note that full forwarding is assumed.
