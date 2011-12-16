@@ -52,9 +52,9 @@ printInstsTail (ArithIOp name dst src lit:insts) acc =
 printInstsTail (BranchOp name src1 src2 lbl:insts) acc =
     printInstsTail insts (acc ++ (name ++ " R" ++ (show src1) ++ ", R" ++ (show src2) ++ ", " ++ lbl ++ "\n"))
 printInstsTail (LoadOp name dst lit src:insts) acc =
-    printInstsTail insts (acc ++ (name ++ " R" ++ (show dst) ++ ", #" ++ (show lit) ++ "(" ++ (show src) ++ ")\n"))
+    printInstsTail insts (acc ++ (name ++ " R" ++ (show dst) ++ ", #" ++ (show lit) ++ "(R" ++ (show src) ++ ")\n"))
 printInstsTail (StoreOp name dst lit src:insts) acc =
-    printInstsTail insts (acc ++ (name ++ " R" ++ (show dst) ++ ", #" ++ (show lit) ++ "(" ++ (show src) ++ ")\n"))
+    printInstsTail insts (acc ++ (name ++ " R" ++ (show dst) ++ ", #" ++ (show lit) ++ "(R" ++ (show src) ++ ")\n"))
 printInstsTail (Stall:insts) acc =
     printInstsTail insts (acc ++ "STALL\n")
 printInstsTail [] acc = putStrLn acc
