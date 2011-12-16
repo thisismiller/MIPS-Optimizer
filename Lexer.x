@@ -1,8 +1,8 @@
 {
 module Lexer (
         lexer,
-        Token(Register,Integer,Comma,LParen,RParen,Label,Instruction),
-        Instruction(Arithmetic,ArithmeticI,Branch,Load,Store)
+        Token(..),
+        Instruction(..)
         ) where
 }
 

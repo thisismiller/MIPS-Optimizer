@@ -4,4 +4,4 @@ import Analysis
 
 main = do
   s <- getContents
-  printInsts $ schedule $ parser $ lexer s
+  printInsts $ insertStalls $ parser $ lexer s
