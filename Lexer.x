@@ -4,6 +4,8 @@ module Lexer (
         Token(..),
         Instruction(..)
         ) where
+
+import Char
 }
 
 %wrapper "basic"
@@ -18,7 +20,11 @@ tokens :-
     \( {\c -> LParen}
     \) {\c -> RParen}
     \#$digit+ {\d -> Integer (read (tail d) :: Int)}
+    $digit+ {\d -> Integer (read (tail d) :: Int)}
     R$digit+ {\d -> Register (read (tail d) :: Int)}
+    \$$digit+ {\d -> Register (read (tail d) :: Int)}
+    \$$alpha$digit+ {\s -> namedRegister s}
+    \$$alpha+ {\s -> namedRegister s}
     ADD   {\s -> Instruction $ Arithmetic s}
     ADDU  {\s -> Instruction $ Arithmetic s}
     AND   {\s -> Instruction $ Arithmetic s}
@@ -70,6 +76,45 @@ data Token =
   | Label String
   | Instruction Instruction
 	deriving (Eq,Show)
+
+namedRegister :: String -> Token
+namedRegister "$zero" = Register 0
+namedRegister "$at" = Register 1
+namedRegister reg@('$':'v':r:[]) = 
+    if '0' <= r && r <= '1' then 
+        Register $ 2 + (digitToInt r)
+    else
+        error $ "Invalid register " ++ reg
+namedRegister reg@('$':'a':r:[]) = 
+    if '0' <= r && r <= '3' then
+        Register $ 4 + (digitToInt r)
+    else
+        error $ "Invalid register " ++ reg
+namedRegister reg@('$':'t':r:[]) = 
+    if '0' <= r && r <= '7' then
+        Register $ 8 + (digitToInt r)
+    else
+        if '8' <= r && r <= '9' then
+            Register $ 24 + (digitToInt r)
+        else
+            error $ "Invald register " ++ reg
+namedRegister reg@('$':'s':r:[]) =
+    if '0' <= r && r <= '7' then
+        Register $ 16 + (digitToInt r)
+    else
+        if r == 'p' then
+            Register 29
+        else
+            error $ "Invalid register " ++ reg
+namedRegister reg@('$':'k':r:[]) =
+    if '0' <= r && r <= '1' then
+        Register $ 24 + (digitToInt r)
+    else
+        error $ "Invalid register " ++ reg
+namedRegister "$gp" = Register 28
+namedRegister "$fp" = Register 30
+namedRegister "$ra" = Register 31
+namedRegister unknown = error $ "Invalid register " ++ unknown
 
 lexer = alexScanTokens
 }
