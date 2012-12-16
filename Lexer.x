@@ -19,6 +19,7 @@ tokens :-
     \, {\c -> Comma}
     \( {\c -> LParen}
     \) {\c -> RParen}
+    \: {\c -> Colon}
     \#$digit+ {\d -> Integer (read (tail d) :: Int)}
     $digit+ {\d -> Integer (read (tail d) :: Int)}
     R$digit+ {\d -> Register (read (tail d) :: Int)}
@@ -54,7 +55,7 @@ tokens :-
     LW    {\s -> Instruction $ Load s}
     SB    {\s -> Instruction $ Store s}
     SW    {\s -> Instruction $ Store s}
-    $alpha$ident* {\id -> Label id}
+    $alpha$ident* {\id -> LabelName id}
 {
 -- Each action has type :: String -> Token
 
@@ -65,15 +66,17 @@ data Instruction =
   | Branch String
   | Load String
   | Store String
+  | Label String
     deriving (Eq,Show)
 
 data Token =
     Register Int
   | Integer Int
+  | LabelName String
   | Comma
+  | Colon
   | LParen
   | RParen
-  | Label String
   | Instruction Instruction
 	deriving (Eq,Show)
 

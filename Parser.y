@@ -8,16 +8,18 @@ import Lexer
 %tokentype { Token }
 %token
     ',' { Comma }
+    ':' { Colon }
     '(' { LParen }
     ')' { RParen }
     reg { Register $$ }
     int { Integer $$ }
-    label { Label $$ }
+    label { LabelName $$ }
     TokArith { Instruction (Arithmetic $$) }
     TokArithI { Instruction (ArithmeticI $$) }
     TokBranch { Instruction (Branch $$) }
     TokLoad { Instruction (Load $$) }
     TokStore { Instruction (Store $$) }
+    TokLabel { Instruction (Label $$) }
 
 %%
 
@@ -29,6 +31,7 @@ instruction : TokArith reg ',' reg ',' reg { ArithOp $1 $2 $4 $6 }
             | TokBranch reg ',' reg ',' label { BranchOp $1 $2 $4 $6 }
             | TokLoad reg ',' int '(' reg ')' { LoadOp $1 $2 $4 $6 }
             | TokStore reg ',' int '(' reg ')' { StoreOp $1 $2 $4 $6 }
+            | TokLabel ':' { LabelOp $2 }
 
 {
 happyError :: [Token] -> a
@@ -40,6 +43,7 @@ data AST =
   | BranchOp String Int Int String
   | LoadOp String Int Int Int
   | StoreOp String Int Int Int
+  | LabelOp String
   | Stall
     deriving (Eq,Show)
 
