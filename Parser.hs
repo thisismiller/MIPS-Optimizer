@@ -48,8 +48,8 @@ parseArithmetic = do
   r3 <- register
   return $ ArithOp inst r1 r2 r3
   where
-    ariths = ["ADD", "ADDU", "AND", "DIV", "DIVU", "MULT", "MULTU",
-              "OR", "SLLV", "SLT", "SRLV, SUB", "SUBU", "XOR"]
+    ariths = ["ADDU", "ADD", "AND", "DIVU", "DIV", "MULTU", "MULT",
+              "OR", "SLLV", "SLT", "SRLV", "SUBU", "SUB", "XOR"]
 
 -- inst reg, reg, imm
 parseArithmeticI :: Parser AST
@@ -59,11 +59,11 @@ parseArithmeticI = do
   commaP
   r2 <- register
   commaP
-  imm <- intP
+  imm <- char '#' *> intP
   return $ ArithIOp inst r1 r2 imm
   where
-    arithis = ["ADDI", "ADDIU", "ANDI", "ORI", "SLTI",
-               "SLTIU", "SRA", "SRL", "XORI"]
+    arithis = ["ADDIU", "ADDI", "ANDI", "ORI", "SLTIU",
+               "SLTI", "SRA", "SRL", "XORI"]
 
 -- inst reg, reg, label
 parseBranch :: Parser AST
@@ -101,7 +101,7 @@ parseLabel :: Parser AST
 parseLabel = fmap LabelOp $ identP <* colonP
 
 program :: Parser [AST]
-program = many $ choice [parseArithmetic, parseArithmeticI, parseBranch,
+program = many $ choice [parseArithmeticI, parseArithmetic, parseBranch,
                          parseLoad, parseStore, parseLabel]
 
 parseInstructions :: String -> Either ParseError [AST]
