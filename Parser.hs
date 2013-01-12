@@ -17,15 +17,6 @@ commaP = comma parser
 colonP = colon parser
 parensP = parens parser
 
-data Instruction =
-    Arithmetic String
-  | ArithmeticI String
-  | Branch String
-  | Load String
-  | Store String
-  | Label String
-    deriving (Eq,Show)
-
 data AST =
     ArithOp String Int Int Int
   | ArithIOp String Int Int Int
