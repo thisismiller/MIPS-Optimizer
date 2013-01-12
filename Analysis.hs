@@ -1,4 +1,4 @@
-module Analysis (insertStalls) where
+module Analysis (insertStalls, toBB) where
 
 import Parser
 import qualified Data.Map as Map
@@ -43,3 +43,13 @@ insertStallsTail (inst:insts) avail cycle schedule =
   else
     insertStallsTail (inst:insts) avail (cycle+1) (Stall:schedule)
 insertStallsTail [] avail cycle schedule = reverse schedule
+
+
+toBB :: [AST] -> [[AST]]
+toBB insts = toBB' insts [] []
+
+toBB' (x:xs) acc bbs =
+  case x of
+    LabelOp name -> toBB' xs [LabelOp name] ((reverse acc):bbs)
+    otherwise -> toBB' xs (x:acc) bbs
+toBB' [] acc bbs = tail $ reverse $ (reverse acc):bbs
