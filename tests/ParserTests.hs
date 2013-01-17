@@ -1,5 +1,7 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
+module ParserTests where
+
 import Test.Framework
 import Parser
 
@@ -18,5 +20,3 @@ test_parse_BEQ = assertParse (BranchOp "BEQ" 0 0 "lbl") "BEQ R0, R0, lbl"
 test_parse_LW = assertParse (LoadOp "LW" 0 0 0) "LW R0, #0(R0)"
 test_parse_SB = assertParse (StoreOp "SB" 0 0 0) "SB R0, #0(R0)"
 test_parse_Label = assertParse (LabelOp "lbl") "lbl:"
-
-main = htfMain htf_thisModulesTests

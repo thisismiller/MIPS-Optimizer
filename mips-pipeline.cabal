@@ -7,10 +7,18 @@ maintainer:          millerdevel@gmail.com
 build-type:          Simple
 cabal-version:       >=1.8
 
-executable pipeline
-  main-is:             Main.hs
+library
+  exposed-modules: Parser, Analysis
   build-depends:       base ==4.3.*, parsec ==3.1.*, containers ==0.4.*, haskell98 ==1.1.*, array ==0.3.*
+  hs-source-dirs: lib
 
-executable check
+executable pipeline
+  main-is:             Pipeline.hs
+  build-depends:       base ==4.3.*, parsec ==3.1.*, containers ==0.4.*, haskell98 ==1.1.*, array ==0.3.*, mips-pipeline
+  hs-source-dirs: src
+
+test-suite check
   main-is: Test.hs
-  build-depends: base ==4.3.*, haskell98 ==1.1.*, HTF ==0.10.*, parsec ==3.1.*
+  type: exitcode-stdio-1.0
+  build-depends: base ==4.3.*, haskell98 ==1.1.*, HTF ==0.10.*, parsec ==3.1.*, mips-pipeline
+  hs-source-dirs: tests
