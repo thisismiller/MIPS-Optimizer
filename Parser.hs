@@ -8,7 +8,7 @@ import Text.Parsec.Token
 import Text.Parsec.Language
 import Text.Printf
 
-parser = makeTokenParser emptyDef { commentLine = [';'], caseSensitive = False }
+parser = makeTokenParser emptyDef { commentLine = ";", caseSensitive = False }
 
 intP = fmap fromIntegral $ integer parser
 insnP = symbol parser
@@ -105,7 +105,7 @@ program = many $ choice [parseArithmeticI, parseArithmetic, parseBranch,
                          parseLoad, parseStore, parseLabel]
 
 parseInstructions :: String -> Either ParseError [AST]
-parseInstructions s = parse program "stdin" s
+parseInstructions = parse program "stdin"
 
 
 printInst inst =
@@ -119,4 +119,4 @@ printInst inst =
     Stall -> printf "%s" "STALL"
 
 printInsts :: [AST] -> IO ()
-printInsts insts = sequence_ $ map (putStrLn.printInst) insts
+printInsts = mapM_ (putStrLn.printInst)

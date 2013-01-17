@@ -6,5 +6,5 @@ import Control.Monad
 main = do
   s <- getContents
   case parseInstructions s of
-    Left err -> putStrLn $ show err
-    Right ast -> sequence_ $ map (printInsts.insertStalls) $ toBB ast
+    Left err -> print err
+    Right ast -> mapM_ (printInsts.insertStalls) $ toBB ast
