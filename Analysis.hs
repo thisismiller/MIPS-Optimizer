@@ -32,15 +32,15 @@ insertStalls insts =
     insertAll (x:xs) val avail = insertAll xs val $ Map.insert x val avail
     insertAll [] val avail = avail
 
-    insertStallsTail :: [Instruction] -> Map.Map Int Int -> Int -> [Instruction] -> [Instruction]
-    insertStallsTail (inst:insts) avail cycle schedule =
+    insertStalls' :: [Instruction] -> Map.Map Int Int -> Int -> [Instruction] -> [Instruction]
+    insertStalls' (inst:insts) avail cycle schedule =
       if satisfied avail cycle inst then
-        insertStallsTail insts (insertAll (instDestinations inst) (cycle + (instLatency inst)) avail) (cycle+1) (inst:schedule)
+        insertStalls' insts (insertAll (instDestinations inst) (cycle + (instLatency inst)) avail) (cycle+1) (inst:schedule)
       else
-        insertStallsTail (inst:insts) avail (cycle+1) (stallInst:schedule)
-    insertStallsTail [] avail cycle schedule = reverse schedule
+        insertStalls' (inst:insts) avail (cycle+1) (stallInst:schedule)
+    insertStalls' [] avail cycle schedule = reverse schedule
   in
-    map instOp $ insertStallsTail (map fromAST insts) Map.empty 1 []
+    map instOp $ insertStalls' (map fromAST insts) Map.empty 1 []
 
 
 toBB :: [AST] -> [[AST]]
